@@ -139,7 +139,6 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 15),
 
-            // Temporary favorite city
             _favoriteCity('Mumbai'),
             _favoriteCity('Lucknow'),
           ],
