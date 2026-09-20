@@ -15,6 +15,8 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
 
     Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -27,23 +29,38 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D47A1),
+      backgroundColor: const Color(0xFF020B20),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.cloud,
-              size: 100,
-              color: Colors.white,
+            Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF102A59),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF42A5F5).withOpacity(0.3),
+                    blurRadius: 40,
+                    spreadRadius: 5,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.cloud,
+                size: 90,
+                color: Color(0xFF90CAF9),
+              ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 35),
 
             const Text(
               'Breezy',
               style: TextStyle(
-                fontSize: 32,
+                fontSize: 38,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -52,17 +69,17 @@ class _SplashPageState extends State<SplashPage> {
             const SizedBox(height: 10),
 
             const Text(
-              'Your weather, anytime',
+              'Your personal weather companion',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white70,
+                color: Colors.white60,
               ),
             ),
 
             const SizedBox(height: 40),
 
             const CircularProgressIndicator(
-              color: Colors.white,
+              color: Color(0xFF42A5F5),
             ),
           ],
         ),
@@ -70,4 +87,3 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 }
-
