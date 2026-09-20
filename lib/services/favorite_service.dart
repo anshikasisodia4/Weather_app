@@ -4,35 +4,34 @@ class FavoriteService {
   final CollectionReference favorites =
       FirebaseFirestore.instance.collection('favorites');
 
-  Future<void> addFavorite(String city) async {
-    final query = await favorites
-        .where('city', isEqualTo: city)
-        .get();
+  String _documentId(String city) {
+    return city
+        .trim()
+        .toLowerCase()
+        .replaceAll(RegExp(r'\s+'), '_');
+  }
 
-    if (query.docs.isEmpty) {
-      await favorites.add({
-        'city': city,
-      });
-    }
+  Future<void> addFavorite(String city) async {
+    final id = _documentId(city);
+
+    await favorites.doc(id).set({
+      'city': city.trim(),
+    });
   }
 
   Stream<List<String>> getFavorites() {
     return favorites.snapshots().map(
       (snapshot) {
-        return snapshot.docs
-            .map((doc) => doc['city'].toString())
-            .toList();
+        return snapshot.docs.map((doc) {
+          return doc['city'].toString();
+        }).toList();
       },
     );
   }
 
   Future<void> deleteFavorite(String city) async {
-    final query = await favorites
-        .where('city', isEqualTo: city)
-        .get();
+    final id = _documentId(city);
 
-    for (final doc in query.docs) {
-      await doc.reference.delete();
-    }
+    await favorites.doc(id).delete();
   }
 }
