@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../services/favorite_service.dart';
+import '../widgets/favorite_card.dart';
+
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final FavoriteService favoriteService = FavoriteService();
+
     return Scaffold(
+      backgroundColor: const Color(0xFF020B20),
+
       appBar: AppBar(
+        backgroundColor: const Color(0xFF020B20),
+        foregroundColor: Colors.white,
+        elevation: 0,
         title: const Text(
           'Favorites',
           style: TextStyle(
@@ -14,17 +24,79 @@ class FavoritesPage extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 3, 10, 16),
-        foregroundColor: Colors.white,
       ),
-      body: const Center(
-        child: Text(
-          'No favorite cities yet',
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.grey,
-          ),
-        ),
+
+      body: StreamBuilder<List<String>>(
+        stream: favoriteService.getFavorites(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState ==
+              ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFF42A5F5),
+              ),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text(
+                'Unable to load favorites',
+                style: TextStyle(
+                  color: Colors.redAccent,
+                ),
+              ),
+            );
+          }
+
+          final favorites = snapshot.data ?? [];
+
+          if (favorites.isEmpty) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.cloud_off,
+                    size: 80,
+                    color: Color(0xFF64B5F6),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'No favorite cities yet',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Add your favorite cities to see them here',
+                    style: TextStyle(
+                      color: Colors.white54,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(20),
+            itemCount: favorites.length,
+            itemBuilder: (context, index) {
+              final city = favorites[index];
+
+              return FavoriteCard(
+                city: city,
+                onDelete: () async {
+                  await favoriteService.deleteFavorite(city);
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }
