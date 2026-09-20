@@ -1,7 +1,8 @@
-
 import 'package:flutter/material.dart';
-import '../data/dummy_data.dart';
+import '../services/favorite_service.dart';
 import '../services/weather_service.dart';
+import '../widgets/weather_card.dart';
+import '../widgets/favorite_card.dart';
 import 'favorites_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,20 +16,14 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _cityController = TextEditingController();
   final WeatherService _weatherService = WeatherService();
 
-  String city = DummyData.city;
-  String temperature = DummyData.temperature;
-  String condition = DummyData.condition;
-  String humidity = DummyData.humidity;
-  String wind = DummyData.wind;
+  String city = 'Delhi';
+  String temperature = '--°C';
+  String condition = 'Search for a city';
+  String humidity = '--%';
+  String wind = '-- km/h';
 
   bool isLoading = false;
   String? errorMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    _cityController.text = DummyData.city;
-  }
 
   Future<void> searchWeather() async {
     final searchCity = _cityController.text.trim();
@@ -121,7 +116,6 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
                 controller: _cityController,
@@ -148,188 +142,62 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 30),
 
               if (isLoading)
-                const Center(
-                  child: CircularProgressIndicator(),
-                )
+                const CircularProgressIndicator()
               else if (errorMessage != null)
-                Center(
-                  child: Text(
-                    errorMessage!,
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 16,
-                    ),
+                Text(
+                  errorMessage!,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 16,
                   ),
                 )
-              else ...[
-                Center(
-                  child: Text(
-                    city,
-                    style: const TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+              else
+                WeatherCard(
+                  city: city,
+                  temperature: temperature,
+                  condition: condition,
+                  humidity: humidity,
+                  wind: wind,
+                ),
+
+              const SizedBox(height: 30),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.star_border),
+                  label: const Text('Add to Favorites'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF42A5F5),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 10),
+              const SizedBox(height: 30),
 
-                const Center(
-                  child: Icon(
-                    Icons.wb_sunny,
-                    size: 90,
-                    color: Color(0xFFFFB300),
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                Center(
-                  child: Text(
-                    temperature,
-                    style: const TextStyle(
-                      fontSize: 55,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-
-                Center(
-                  child: Text(
-                    condition,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: _weatherDetail(
-                        Icons.water_drop,
-                        'Humidity',
-                        humidity,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _weatherDetail(
-                        Icons.air,
-                        'Wind',
-                        wind,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 30),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.star_border),
-                    label: const Text('Add to Favorites'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF42A5F5),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                const Text(
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
                   'Favorite Cities',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-                ...DummyData.favoriteCities.map(
-                  (city) => _favoriteCity(city),
-                ),
-              ],
+              
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _weatherDetail(
-    IconData icon,
-    String title,
-    String value,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            icon,
-            color: const Color(0xFF42A5F5),
-            size: 30,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _favoriteCity(String city) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 10),
-      child: ListTile(
-        leading: const CircleAvatar(
-          backgroundColor: Color(0xFFE3F2FD),
-          child: Icon(
-            Icons.location_on,
-            color: Color(0xFF42A5F5),
-          ),
-        ),
-        title: Text(
-          city,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        trailing: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.delete_outline,
-            color: Colors.red,
           ),
         ),
       ),
