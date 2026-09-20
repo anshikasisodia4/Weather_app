@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../services/favorite_service.dart';
+
 import '../services/weather_service.dart';
+import '../services/favorite_service.dart';
 import '../widgets/weather_card.dart';
 import '../widgets/favorite_card.dart';
 import 'favorites_page.dart';
@@ -15,8 +16,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController _cityController = TextEditingController();
   final WeatherService _weatherService = WeatherService();
+  final FavoriteService _favoriteService = FavoriteService();
 
-  String city = 'Delhi';
+  String city = '';
   String temperature = '--°C';
   String condition = 'Search for a city';
   String humidity = '--%';
@@ -75,6 +77,37 @@ class _HomePageState extends State<HomePage> {
       return 'Snow Showers';
     } else {
       return 'Thunderstorm';
+    }
+  }
+
+  Future<void> addToFavorites() async {
+    if (city.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Search for a city first'),
+        ),
+      );
+      return;
+    }
+
+    try {
+      await _favoriteService.addFavorite(city);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('$city added to favorites'),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not add city to favorites'),
+          ),
+        );
+      }
     }
   }
 
@@ -142,16 +175,20 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 30),
 
               if (isLoading)
-                const CircularProgressIndicator()
+                const Center(
+                  child: CircularProgressIndicator(),
+                )
               else if (errorMessage != null)
-                Text(
-                  errorMessage!,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 16,
+                Center(
+                  child: Text(
+                    errorMessage!,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 16,
+                    ),
                   ),
                 )
-              else
+              else if (city.isNotEmpty)
                 WeatherCard(
                   city: city,
                   temperature: temperature,
@@ -160,12 +197,12 @@ class _HomePageState extends State<HomePage> {
                   wind: wind,
                 ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: addToFavorites,
                   icon: const Icon(Icons.star_border),
                   label: const Text('Add to Favorites'),
                   style: ElevatedButton.styleFrom(
@@ -196,7 +233,55 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 15),
 
-              
+              StreamBuilder<List<String>>(
+                stream: _favoriteService.getFavorites(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Text(
+                      'Unable to load favorite cities',
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
+                    );
+                  }
+
+                  final favorites = snapshot.data ?? [];
+
+                  if (favorites.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text(
+                          'No favorite cities yet',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  return Column(
+                    children: favorites.map((favoriteCity) {
+                      return FavoriteCard(
+                        city: favoriteCity,
+                        onDelete: () async {
+                          await _favoriteService
+                              .deleteFavorite(favoriteCity);
+                        },
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
             ],
           ),
         ),
