@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import '../data/dummy_data.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -17,131 +19,122 @@ class HomePage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 3, 10, 16),
         foregroundColor: Colors.white,
       ),
-
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search city...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
+      body: Container(
+        color: const Color(0xFFF3F8FC),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search city...',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.arrow_forward),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              Center(
+                child: Text(
+                  DummyData.city,
+                  style: const TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Center(
+                child: Icon(
+                  Icons.wb_sunny,
+                  size: 90,
+                  color: Color(0xFFFFB300),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Center(
+                child: Text(
+                  DummyData.temperature,
+                  style: const TextStyle(
+                    fontSize: 55,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Center(
+                child: Text(
+                  DummyData.condition,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              Row(
+                children: [
+                  Expanded(
+                    child: _weatherDetail(
+                      Icons.water_drop,
+                      'Humidity',
+                      DummyData.humidity,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _weatherDetail(
+                      Icons.air,
+                      'Wind',
+                      DummyData.wind,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
                   onPressed: () {},
-                  icon: const Icon(Icons.arrow_forward),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide.none,
+                  icon: const Icon(Icons.star_border),
+                  label: const Text('Add to Favorites'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF42A5F5),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
                 ),
               ),
-            ),
-
-            const SizedBox(height: 30),
-
-            const Center(
-              child: Text(
-                'Delhi',
+              const SizedBox(height: 30),
+              const Text(
+                'Favorite Cities',
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-
-            const SizedBox(height: 10),
-
-            const Center(
-              child: Icon(
-                Icons.wb_sunny,
-                size: 90,
-                color: Color(0xFFFFB300),
+              const SizedBox(height: 15),
+              ...DummyData.favoriteCities.map(
+                (city) => _favoriteCity(city),
               ),
-            ),
-
-            const SizedBox(height: 10),
-
-            const Center(
-              child: Text(
-                '28°C',
-                style: TextStyle(
-                  fontSize: 55,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
-            const Center(
-              child: Text(
-                'Clear Sky',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _weatherDetail(
-                    Icons.water_drop,
-                    'Humidity',
-                    '45%',
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _weatherDetail(
-                    Icons.air,
-                    'Wind',
-                    '12 km/h',
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 30),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.star_border),
-                label: const Text('Add to Favorites'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF42A5F5),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-        
-            const Text(
-              'Favorite Cities',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            _favoriteCity('Mumbai'),
-            _favoriteCity('Lucknow'),
-          ],
+            ],
+          ),
         ),
       ),
     );
