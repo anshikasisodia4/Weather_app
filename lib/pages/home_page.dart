@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import '../data/dummy_data.dart';
+import 'favorites_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -18,6 +18,19 @@ class HomePage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 3, 10, 16),
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FavoritesPage(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.star),
+          ),
+        ],
       ),
       body: Container(
         color: const Color(0xFFF3F8FC),
@@ -206,4 +219,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
