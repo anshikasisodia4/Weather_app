@@ -12,40 +12,56 @@ class FavoriteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF102A59),
+            Color(0xFF091C3E),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFF1B4078),
+        ),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 8,
         ),
-        leading: const CircleAvatar(
-          radius: 25,
-          backgroundColor: Color(0xFFE3F2FD),
-          child: Icon(
+        leading: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: const Color(0xFF12386D),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: const Icon(
             Icons.location_on,
-            color: Color(0xFF42A5F5),
+            color: Color(0xFF64B5F6),
           ),
         ),
         title: Text(
           city,
           style: const TextStyle(
-            fontSize: 18,
+            color: Colors.white,
+            fontSize: 17,
             fontWeight: FontWeight.bold,
           ),
         ),
         subtitle: const Text(
           'Favorite city',
+          style: TextStyle(
+            color: Colors.white54,
+          ),
         ),
         trailing: IconButton(
           onPressed: onDelete,
           icon: const Icon(
             Icons.delete_outline,
-            color: Colors.red,
+            color: Colors.white70,
           ),
         ),
       ),
