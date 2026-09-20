@@ -23,10 +23,12 @@ class BreezyApp extends StatelessWidget {
       title: 'Breezy',
       theme: ThemeData(
         useMaterial3: true,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF020B20),
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF42A5F5),
+          brightness: Brightness.dark,
         ),
-        scaffoldBackgroundColor: const Color(0xFFF5FAFF),
       ),
       home: const SplashPage(),
     );
