@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
 
   String city = '';
   String temperature = '--°';
-  String condition = 'Search for a city';
+  String condition = 'Search a city';
   String humidity = '--%';
   String wind = '-- km/h';
 
@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
       });
     } catch (e) {
       setState(() {
-        errorMessage = 'City not found or weather unavailable';
+        errorMessage = 'City not found or currently unavailable';
         isLoading = false;
       });
     }

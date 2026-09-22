@@ -69,7 +69,7 @@ class _SplashPageState extends State<SplashPage> {
             const SizedBox(height: 10),
 
             const Text(
-              'Your personal weather companion',
+              'Check Weather ',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.white60,
