@@ -357,7 +357,7 @@ class _HomePageState extends State<HomePage> {
                       onDelete: () async {
                         await _favoriteService
                             .deleteFavorite(favoriteCity);
-                      },
+                      },onTap: () {},
                     );
                   }).toList(),
                 );

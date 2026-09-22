@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class FavoriteCard extends StatelessWidget {
   final String city;
   final VoidCallback onDelete;
+  final VoidCallback onTap;
 
   const FavoriteCard({
     super.key,
     required this.city,
     required this.onDelete,
+    required this.onTap,
   });
 
   @override
@@ -27,10 +29,13 @@ class FavoriteCard extends StatelessWidget {
         ),
       ),
       child: ListTile(
+        onTap: onTap,
+
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 8,
         ),
+
         leading: Container(
           width: 48,
           height: 48,
@@ -43,6 +48,7 @@ class FavoriteCard extends StatelessWidget {
             color: Color(0xFF64B5F6),
           ),
         ),
+
         title: Text(
           city,
           style: const TextStyle(
@@ -51,12 +57,14 @@ class FavoriteCard extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+
         subtitle: const Text(
-          'Favorite city',
+          'Tap to view weather',
           style: TextStyle(
             color: Colors.white54,
           ),
         ),
+
         trailing: IconButton(
           onPressed: onDelete,
           icon: const Icon(
