@@ -351,7 +351,7 @@ class _HomePageState extends State<HomePage> {
                 }
 
                 return Column(
-                  children: favorites.take(3).map((favoriteCity) {
+                  children: favorites.take(7).map((favoriteCity) {
                     return FavoriteCard(
                       city: favoriteCity,
                       onDelete: () async {
