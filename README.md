@@ -55,9 +55,7 @@ lib/
 2. Clone or download this project.
 3. Run:
 
-
 flutter pub get
-
 
 4. Configure Firebase for the project.
 5. Run the application:
