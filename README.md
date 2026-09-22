@@ -31,7 +31,6 @@ Breezy is a simple Flutter weather application that shows real-time weather info
 5. Favorite cities are stored in Firebase Firestore.
 6. Tapping a favorite city fetches its latest temperature.
 
-
 ## API
 
 Breezy uses the Open-Meteo API for weather and geocoding data.
@@ -41,7 +40,6 @@ No API key is required.
 ## Firebase
 
 Firebase Firestore is used to store favorite cities.
-
 
 ## Author
 Anshika
