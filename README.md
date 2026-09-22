@@ -31,22 +31,6 @@ Breezy is a simple Flutter weather application that shows real-time weather info
 5. Favorite cities are stored in Firebase Firestore.
 6. Tapping a favorite city fetches its latest temperature.
 
-## Project Structure
-
-
-lib/
-├── main.dart
-├── firebase_options.dart
-├── pages/
-│   ├── splash_page.dart
-│   ├── home_page.dart
-│   └── favorites_page.dart
-├── services/
-│   ├── weather_service.dart
-│   └── favorite_service.dart
-└── widgets/
-    ├── weather_card.dart
-    └── favorite_card.dart
 
 
 ## Setup
@@ -73,14 +57,6 @@ No API key is required.
 
 Firebase Firestore is used to store favorite cities.
 
-Example:
-
-
-favorites
-├── delhi
-│   └── city: Delhi
-└── mumbai
-    └── city: Mumbai
 
 ## Author
 Anshika
