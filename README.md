@@ -32,21 +32,6 @@ Breezy is a simple Flutter weather application that shows real-time weather info
 6. Tapping a favorite city fetches its latest temperature.
 
 
-
-## Setup
-
-1. Install Flutter.
-2. Clone or download this project.
-3. Run:
-
-flutter pub get
-
-4. Configure Firebase for the project.
-5. Run the application:
-
-
-flutter run
-
 ## API
 
 Breezy uses the Open-Meteo API for weather and geocoding data.
