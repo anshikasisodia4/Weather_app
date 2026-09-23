@@ -42,4 +42,4 @@ No API key is required.
 Firebase Firestore is used to store favorite cities.
 
 ## Author
-Anshika
+Anshika Sisodiya
