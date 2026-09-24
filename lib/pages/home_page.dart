@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../services/weather_service.dart';
 import '../services/favorite_service.dart';
 import '../widgets/weather_card.dart';
