@@ -42,7 +42,7 @@ class _SplashPageState extends State<SplashPage> {
                 color: const Color(0xFF102A59),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF42A5F5).withOpacity(0.3),
+                   color: const Color(0xFF42A5F5).withValues(alpha: 0.3),
                     blurRadius: 40,
                     spreadRadius: 5,
                   ),
