@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../models/weather_model.dart';
 
 class WeatherService {
-  Future<Map<String, dynamic>> getWeather(String city) async {
+  Future<WeatherModel> getWeather(String city) async {
     final locationUrl = Uri.parse(
       'https://geocoding-api.open-meteo.com/v1/search'
       '?name=$city&count=1&language=en&format=json',
@@ -44,12 +45,12 @@ class WeatherService {
 
     final weatherData = jsonDecode(weatherResponse.body);
 
-    return {
-      'city': cityName,
-      'temperature': weatherData['current']['temperature_2m'],
-      'humidity': weatherData['current']['relative_humidity_2m'],
-      'wind': weatherData['current']['wind_speed_10m'],
-      'weatherCode': weatherData['current']['weather_code'],
-    };
+    return WeatherModel(
+      city: cityName,
+      temperature: weatherData['current']['temperature_2m'].toDouble(),
+      humidity: weatherData['current']['relative_humidity_2m'],
+      wind: weatherData['current']['wind_speed_10m'].toDouble(),
+      weatherCode: weatherData['current']['weather_code'],
+    );
   }
 }
