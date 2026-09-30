@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/weather_service.dart';
+
+import '../controllers/weather_controller.dart';
 import '../services/favorite_service.dart';
 import '../widgets/weather_card.dart';
 import '../widgets/search_bar.dart';
@@ -17,76 +18,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController _cityController = TextEditingController();
 
-  final WeatherService _weatherService = WeatherService();
+  final WeatherController _weatherController = WeatherController();
+
   final FavoriteService _favoriteService = FavoriteService();
 
-  String city = '';
-  String temperature = '--°';
-  String condition = 'Search a city';
-  String humidity = '--%';
-  String wind = '-- km/h';
-
-  int weatherCode = 0;
-
-  bool isLoading = false;
   bool isAddingFavorite = false;
 
-  String? errorMessage;
-
-  Future<void> searchWeather() async {
-    final searchCity = _cityController.text.trim();
-
-    if (searchCity.isEmpty) return;
-
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-    });
-
-    try {
-      final data = await _weatherService.getWeather(searchCity);
-
-      setState(() {
-        city = data.city;
-        temperature = '${data.temperature}°';
-        humidity = '${data.humidity}%';
-        wind = '${data.windSpeed} km/h';
-        weatherCode = data.weatherCode;
-        condition = getWeatherCondition(data.weatherCode);
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        errorMessage = 'City not found or currently unavailable';
-        isLoading = false;
-      });
-    }
-  }
-
-  String getWeatherCondition(int code) {
-    if (code == 0) {
-      return 'Clear Sky';
-    } else if (code <= 3) {
-      return 'Partly Cloudy';
-    } else if (code <= 48) {
-      return 'Foggy';
-    } else if (code <= 57) {
-      return 'Drizzle';
-    } else if (code <= 67) {
-      return 'Rainy';
-    } else if (code <= 77) {
-      return 'Snowy';
-    } else if (code <= 82) {
-      return 'Rain Showers';
-    } else if (code <= 86) {
-      return 'Snow Showers';
-    } else {
-      return 'Thunderstorm';
-    }
-  }
-
   Future<void> addToFavorites() async {
-    if (city.isEmpty) {
+    final city = _weatherController.weather?.city;
+
+    if (city == null || city.isEmpty) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Search for a city first')));
@@ -124,230 +65,145 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _cityController.dispose();
+    _weatherController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF08152F),
+    return AnimatedBuilder(
+      animation: _weatherController,
+      builder: (context, child) {
+        return Scaffold(
+          backgroundColor: const Color(0xFF020B20),
 
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
-
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-
-                    children: [
-                      Text(
-                        'Breezy',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 27,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-
-                      SizedBox(height: 3),
-
-                      Text(
-                        'Weather forecast',
-                        style: TextStyle(color: Colors.white54, fontSize: 13),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FavoritesPage(),
-                        ),
-                      );
-                    },
-
-                    icon: const Icon(
-                      Icons.favorite_border_rounded,
-                      color: Colors.white,
-                      size: 27,
-                    ),
-                  ),
-                ],
+          appBar: AppBar(
+            backgroundColor: const Color(0xFF020B20),
+            elevation: 0,
+            title: const Text(
+              'Breezy',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
-
-              const SizedBox(height: 25),
-
-              SearchBarWidget(
-                controller: _cityController,
-                onSearch: searchWeather,
+            ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FavoritesPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.star_border, color: Color(0xFF64B5F6)),
               ),
-
-              const SizedBox(height: 28),
-
-              if (isLoading)
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(60),
-
-                    child: CircularProgressIndicator(color: Color(0xFF64B5F6)),
-                  ),
-                )
-              else if (errorMessage != null)
-                Container(
-                  width: double.infinity,
-
-                  padding: const EdgeInsets.all(25),
-
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(),
-                    borderRadius: BorderRadius.circular(28),
-                  ),
-
-                  child: Column(
-                    children: [
-                      const Icon(
-                        Icons.cloud_off_rounded,
-                        color: Colors.white54,
-                        size: 45,
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      Text(
-                        errorMessage!,
-                        textAlign: TextAlign.center,
-
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              else if (city.isNotEmpty)
-                Column(
-                  children: [
-                    WeatherCard(
-                      city: city,
-                      temperature: temperature,
-                      condition: condition,
-                      humidity: humidity,
-                      wind: wind,
-                      weatherCode: weatherCode,
-                    ),
-
-                    const SizedBox(height: 18),
-
-                    GestureDetector(
-                      onTap: isAddingFavorite ? null : addToFavorites,
-
-                      child: Container(
-                        width: double.infinity,
-
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF387BEA), Color(0xFF5B5FEF)],
-                          ),
-
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-
-                          children: [
-                            if (isAddingFavorite)
-                              const SizedBox(
-                                width: 19,
-                                height: 19,
-
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            else
-                              const Icon(
-                                Icons.favorite_border_rounded,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-
-                            const SizedBox(width: 9),
-
-                            Text(
-                              isAddingFavorite
-                                  ? 'Adding...'
-                                  : 'Add to Favorites',
-
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              else
-                const EmptyWeather(),
-
-              const SizedBox(height: 32),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                children: [
-                  const Text(
-                    'Favorite Cities',
-
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FavoritesPage(),
-                        ),
-                      );
-                    },
-
-                    child: const Text(
-                      'See all',
-
-                      style: TextStyle(color: Color(0xFF64B5F6)),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 8),
-              FavoriteSection(favoriteService: _favoriteService),
             ],
           ),
-        ),
-      ),
+
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 5, 20, 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Find your weather',
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                ),
+
+                const SizedBox(height: 14),
+
+                SearchBarWidget(
+                  controller: _cityController,
+                  onSearch: () {
+                    _weatherController.searchWeather(_cityController.text);
+                  },
+                ),
+
+                const SizedBox(height: 28),
+
+                if (_weatherController.isLoading)
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(40),
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF42A5F5),
+                      ),
+                    ),
+                  )
+                else if (_weatherController.errorMessage != null)
+                  Center(
+                    child: Text(
+                      _weatherController.errorMessage!,
+                      style: const TextStyle(color: Colors.redAccent),
+                    ),
+                  )
+                else if (_weatherController.weather != null)
+                  WeatherCard(
+                    city: _weatherController.weather!.city,
+                    temperature: '${_weatherController.weather!.temperature}°',
+                    condition: _weatherController.getWeatherCondition(
+                      _weatherController.weather!.weatherCode,
+                    ),
+                    humidity: '${_weatherController.weather!.humidity}%',
+                    wind: '${_weatherController.weather!.windSpeed} km/h',
+                    weatherCode: _weatherController.weather!.weatherCode,
+                  )
+                else
+                  const EmptyWeather(),
+
+                const SizedBox(height: 22),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: isAddingFavorite ? null : addToFavorites,
+                    icon: isAddingFavorite
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Icon(Icons.star),
+                    label: Text(
+                      isAddingFavorite ? 'Adding...' : 'Add to Favorites',
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF42A5F5),
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor: const Color(0xFF21477F),
+                      padding: const EdgeInsets.symmetric(vertical: 17),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(17),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                const Text(
+                  'Favorite Cities',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 21,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 14),
+
+                FavoriteSection(favoriteService: _favoriteService),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
