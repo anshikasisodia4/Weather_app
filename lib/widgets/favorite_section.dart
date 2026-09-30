@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import '../services/favorite_service.dart';
+import '../controllers/favorite_controller.dart';
 import 'favorite_card.dart';
 
 class FavoriteSection extends StatelessWidget {
-  final FavoriteService favoriteService;
+  final FavoriteController favoriteController;
 
   const FavoriteSection({
     super.key,
-    required this.favoriteService,
+    required this.favoriteController,
   });
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<String>>(
-      stream: favoriteService.getFavorites(),
+      stream: favoriteController.getFavorites(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -47,7 +47,7 @@ class FavoriteSection extends StatelessWidget {
             return FavoriteCard(
               city: city,
               onDelete: () async {
-                await favoriteService.deleteFavorite(city);
+                await favoriteController.deleteFavorite(city);
               },
               onTap: () {},
             );
