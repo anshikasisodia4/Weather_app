@@ -49,7 +49,7 @@ class WeatherService {
       city: cityName,
       temperature: weatherData['current']['temperature_2m'].toDouble(),
       humidity: weatherData['current']['relative_humidity_2m'],
-      wind: weatherData['current']['wind_speed_10m'].toDouble(),
+     windSpeed: weatherData['current']['wind_speed_10m'].toDouble(),
       weatherCode: weatherData['current']['weather_code'],
     );
   }

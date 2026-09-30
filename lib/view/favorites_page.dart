@@ -128,7 +128,7 @@ class FavoritesPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             title: Text(
-                              weather['city'].toString(),
+                              weather.city.toString(),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -144,7 +144,7 @@ class FavoritesPage extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 15),
                                 Text(
-                                  '${weather['temperature']}°C',
+                                  '${weather.temperature}°C',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 36,

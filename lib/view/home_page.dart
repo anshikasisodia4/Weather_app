@@ -7,6 +7,7 @@ import '../widgets/empty_weather.dart';
 import '../widgets/favorite_section.dart';
 import 'favorites_page.dart';
 
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -47,12 +48,12 @@ class _HomePageState extends State<HomePage> {
       final data = await _weatherService.getWeather(searchCity);
 
       setState(() {
-        city = data['city'];
-        temperature = '${data['temperature']}°';
-        humidity = '${data['humidity']}%';
-        wind = '${data['wind']} km/h';
-        weatherCode = data['weatherCode'];
-        condition = getWeatherCondition(data['weatherCode']);
+        city = data.city;
+        temperature = '${data.temperature}°';
+        humidity = '${data.humidity}%';
+        wind = '${data.windSpeed} km/h';
+        weatherCode = data.weatherCode;
+        condition = getWeatherCondition(data.weatherCode);
         isLoading = false;
       });
     } catch (e) {
@@ -161,7 +162,7 @@ class _HomePageState extends State<HomePage> {
               );
             },
             icon: const Icon(
-              Icons.star_border,
+              Icons.favorite_border,
               color: Color(0xFF64B5F6),
             ),
           ),

@@ -70,7 +70,7 @@ class WeatherCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF2196F3).withOpacity(0.15),
+            color: const Color(0xFF2196F3).withValues(),
             blurRadius: 25,
             spreadRadius: 2,
           ),
