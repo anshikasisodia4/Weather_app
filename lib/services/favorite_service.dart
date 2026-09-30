@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/favorite_model.dart';
 
 class FavoriteService {
   final CollectionReference favorites =
@@ -19,11 +20,13 @@ class FavoriteService {
     });
   }
 
-  Stream<List<String>> getFavorites() {
+  Stream<List<FavoriteModel>> getFavorites() {
     return favorites.snapshots().map(
       (snapshot) {
         return snapshot.docs.map((doc) {
-          return doc['city'].toString();
+          return FavoriteModel(
+            city: doc['city'].toString(),
+          );
         }).toList();
       },
     );

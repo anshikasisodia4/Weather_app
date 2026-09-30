@@ -4,15 +4,17 @@ import 'favorite_card.dart';
 
 class FavoriteSection extends StatelessWidget {
   final FavoriteController favoriteController;
+  final Function(String) onCitySelected;
 
   const FavoriteSection({
     super.key,
     required this.favoriteController,
+    required this.onCitySelected,
   });
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<String>>(
+    return StreamBuilder(
       stream: favoriteController.getFavorites(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -26,7 +28,9 @@ class FavoriteSection extends StatelessWidget {
         if (snapshot.hasError) {
           return const Text(
             'Unable to load favorites',
-            style: TextStyle(color: Colors.redAccent),
+            style: TextStyle(
+              color: Colors.redAccent,
+            ),
           );
         }
 
@@ -37,19 +41,27 @@ class FavoriteSection extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 20),
             child: Text(
               'No favorite cities yet',
-              style: TextStyle(color: Colors.white54),
+              style: TextStyle(
+                color: Colors.white54,
+              ),
             ),
           );
         }
 
         return Column(
-          children: favorites.take(7).map((city) {
+          children: favorites.take(7).map((favorite) {
             return FavoriteCard(
-              city: city,
+              city: favorite.city,
+
               onDelete: () async {
-                await favoriteController.deleteFavorite(city);
+                await favoriteController.deleteFavorite(
+                  favorite.city,
+                );
               },
-              onTap: () {},
+
+              onTap: () {
+                onCitySelected(favorite.city);
+              },
             );
           }).toList(),
         );

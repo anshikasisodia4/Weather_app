@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../services/favorite_service.dart';
+import '../models/favorite_model.dart';
 
 class FavoriteController extends ChangeNotifier {
   final FavoriteService _favoriteService = FavoriteService();
@@ -27,6 +28,7 @@ class FavoriteController extends ChangeNotifier {
   Future<void> deleteFavorite(String city) async {
     try {
       await _favoriteService.deleteFavorite(city);
+      errorMessage = null;
       notifyListeners();
     } catch (e) {
       errorMessage = 'Could not delete city from favorites';
@@ -34,7 +36,7 @@ class FavoriteController extends ChangeNotifier {
     }
   }
 
-  Stream<List<String>> getFavorites() {
+  Stream<List<FavoriteModel>> getFavorites() {
     return _favoriteService.getFavorites();
   }
 }

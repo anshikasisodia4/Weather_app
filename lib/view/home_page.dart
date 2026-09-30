@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../controllers/weather_controller.dart';
 import '../controllers/favorite_controller.dart';
+
 import '../widgets/weather_card.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/empty_weather.dart';
 import '../widgets/favorite_section.dart';
+
 import 'favorites_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -58,6 +60,18 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+ void selectFavoriteCity(String city) {
+  _cityController.text = city;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Loading weather for $city'),
+    ),
+  );
+
+  _weatherController.searchWeather(city);
+}
+
   @override
   void dispose() {
     _cityController.dispose();
@@ -80,6 +94,7 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(
             backgroundColor: const Color(0xFF020B20),
             elevation: 0,
+
             title: const Text(
               'Breezy',
               style: TextStyle(
@@ -88,17 +103,24 @@ class _HomePageState extends State<HomePage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+
             actions: [
               IconButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          const FavoritesPage(),
+                      builder: (context) => FavoritesPage(
+                        onCitySelected: (city) {
+                          Navigator.pop(context);
+
+                          selectFavoriteCity(city);
+                        },
+                      ),
                     ),
                   );
                 },
+
                 icon: const Icon(
                   Icons.star_border,
                   color: Color(0xFF64B5F6),
@@ -108,8 +130,13 @@ class _HomePageState extends State<HomePage> {
           ),
 
           body: SingleChildScrollView(
-            padding:
-                const EdgeInsets.fromLTRB(20, 5, 20, 30),
+            padding: const EdgeInsets.fromLTRB(
+              20,
+              5,
+              20,
+              30,
+            ),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -143,6 +170,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   )
+
                 else if (_weatherController.errorMessage != null)
                   Center(
                     child: Text(
@@ -152,26 +180,29 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   )
+
                 else if (_weatherController.weather != null)
                   WeatherCard(
-                    city:
-                        _weatherController.weather!.city,
+                    city: _weatherController.weather!.city,
+
                     temperature:
                         '${_weatherController.weather!.temperature}°',
+
                     condition:
-                        _weatherController
-                            .getWeatherCondition(
-                      _weatherController
-                          .weather!.weatherCode,
+                        _weatherController.getWeatherCondition(
+                      _weatherController.weather!.weatherCode,
                     ),
+
                     humidity:
                         '${_weatherController.weather!.humidity}%',
+
                     wind:
                         '${_weatherController.weather!.windSpeed} km/h',
+
                     weatherCode:
-                        _weatherController
-                            .weather!.weatherCode,
+                        _weatherController.weather!.weatherCode,
                   )
+
                 else
                   const EmptyWeather(),
 
@@ -179,6 +210,7 @@ class _HomePageState extends State<HomePage> {
 
                 SizedBox(
                   width: double.infinity,
+
                   child: ElevatedButton.icon(
                     onPressed:
                         _favoriteController.isAddingFavorite
@@ -207,13 +239,17 @@ class _HomePageState extends State<HomePage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           const Color(0xFF42A5F5),
+
                       foregroundColor: Colors.white,
+
                       disabledBackgroundColor:
                           const Color(0xFF21477F),
+
                       padding:
                           const EdgeInsets.symmetric(
                         vertical: 17,
                       ),
+
                       shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.circular(17),
@@ -236,7 +272,10 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 14),
 
                 FavoriteSection(
-                  favoriteController: _favoriteController,
+                  favoriteController:
+                      _favoriteController,
+
+                  onCitySelected: selectFavoriteCity,
                 ),
               ],
             ),
