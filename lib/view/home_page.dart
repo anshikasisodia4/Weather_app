@@ -7,7 +7,6 @@ import '../widgets/empty_weather.dart';
 import '../widgets/favorite_section.dart';
 import 'favorites_page.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -88,11 +87,9 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> addToFavorites() async {
     if (city.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Search for a city first'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Search for a city first')));
       return;
     }
 
@@ -106,18 +103,13 @@ class _HomePageState extends State<HomePage> {
       await _favoriteService.addFavorite(city);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('$city added to favorites'),
-          ),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('$city added to favorites')));
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not add city to favorites'),
-          ),
+          const SnackBar(content: Text('Could not add city to favorites')),
         );
       }
     } finally {
@@ -138,144 +130,222 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF020B20),
+      backgroundColor: const Color(0xFF08152F),
 
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF020B20),
-        elevation: 0,
-        title: const Text(
-          'Breezy',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const FavoritesPage(),
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.favorite_border,
-              color: Color(0xFF64B5F6),
-            ),
-          ),
-        ],
-      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 5, 20, 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
 
-            const Text(
-              'Find your weather',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
-              ),
-            ),
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-            const SizedBox(height: 14),
+                children: [
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
 
-            SearchBarWidget(
-              controller: _cityController,
-              onSearch: searchWeather,
-            ),
-
-            const SizedBox(height: 28),
-
-            if (isLoading)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(40),
-                  child: CircularProgressIndicator(
-                    color: Color(0xFF42A5F5),
-                  ),
-                ),
-              )
-            else if (errorMessage != null)
-              Center(
-                child: Text(
-                  errorMessage!,
-                  style: const TextStyle(
-                    color: Colors.redAccent,
-                  ),
-                ),
-              )
-            else if (city.isNotEmpty)
-              WeatherCard(
-                city: city,
-                temperature: temperature,
-                condition: condition,
-                humidity: humidity,
-                wind: wind,
-                weatherCode: weatherCode,
-              )
-            else
-              const EmptyWeather(),
-
-            const SizedBox(height: 22),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed:
-                    isAddingFavorite ? null : addToFavorites,
-                icon: isAddingFavorite
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
+                    children: [
+                      Text(
+                        'Breezy',
+                        style: TextStyle(
                           color: Colors.white,
+                          fontSize: 27,
+                          fontWeight: FontWeight.w700,
                         ),
-                      )
-                    : const Icon(Icons.star),
-                label: Text(
-                  isAddingFavorite
-                      ? 'Adding...'
-                      : 'Add to Favorites',
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF42A5F5),
-                  foregroundColor: Colors.white,
-                  disabledBackgroundColor:
-                      const Color(0xFF21477F),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 17,
+                      ),
+
+                      SizedBox(height: 3),
+
+                      Text(
+                        'Weather forecast',
+                        style: TextStyle(color: Colors.white54, fontSize: 13),
+                      ),
+                    ],
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(17),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FavoritesPage(),
+                        ),
+                      );
+                    },
+
+                    icon: const Icon(
+                      Icons.favorite_border_rounded,
+                      color: Colors.white,
+                      size: 27,
+                    ),
                   ),
-                ),
+                ],
               ),
-            ),
 
-            const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
-            const Text(
-              'Favorite Cities',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 21,
-                fontWeight: FontWeight.bold,
+              SearchBarWidget(
+                controller: _cityController,
+                onSearch: searchWeather,
               ),
-            ),
 
-            const SizedBox(height: 14),
+              const SizedBox(height: 28),
 
-            FavoriteSection(
-              favoriteService: _favoriteService,
-            ),
-          ],
+              if (isLoading)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(60),
+
+                    child: CircularProgressIndicator(color: Color(0xFF64B5F6)),
+                  ),
+                )
+              else if (errorMessage != null)
+                Container(
+                  width: double.infinity,
+
+                  padding: const EdgeInsets.all(25),
+
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(),
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.cloud_off_rounded,
+                        color: Colors.white54,
+                        size: 45,
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      Text(
+                        errorMessage!,
+                        textAlign: TextAlign.center,
+
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else if (city.isNotEmpty)
+                Column(
+                  children: [
+                    WeatherCard(
+                      city: city,
+                      temperature: temperature,
+                      condition: condition,
+                      humidity: humidity,
+                      wind: wind,
+                      weatherCode: weatherCode,
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    GestureDetector(
+                      onTap: isAddingFavorite ? null : addToFavorites,
+
+                      child: Container(
+                        width: double.infinity,
+
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF387BEA), Color(0xFF5B5FEF)],
+                          ),
+
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+
+                          children: [
+                            if (isAddingFavorite)
+                              const SizedBox(
+                                width: 19,
+                                height: 19,
+
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            else
+                              const Icon(
+                                Icons.favorite_border_rounded,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+
+                            const SizedBox(width: 9),
+
+                            Text(
+                              isAddingFavorite
+                                  ? 'Adding...'
+                                  : 'Add to Favorites',
+
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              else
+                const EmptyWeather(),
+
+              const SizedBox(height: 32),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                children: [
+                  const Text(
+                    'Favorite Cities',
+
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FavoritesPage(),
+                        ),
+                      );
+                    },
+
+                    child: const Text(
+                      'See all',
+
+                      style: TextStyle(color: Color(0xFF64B5F6)),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 8),
+              FavoriteSection(favoriteService: _favoriteService),
+            ],
+          ),
         ),
       ),
     );

@@ -18,58 +18,75 @@ class FavoriteCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [
-            Color(0xFF102A59),
-            Color(0xFF091C3E),
+            Color(0xFF173A72),
+            Color(0xFF0B2045),
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: const Color(0xFF1B4078),
+          color: Colors.white10,
         ),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 12,
+            offset: Offset(0, 6),
+          ),
+        ],
       ),
       child: ListTile(
         onTap: onTap,
 
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 18,
+          horizontal: 16,
           vertical: 8,
         ),
 
         leading: Container(
-          width: 48,
-          height: 48,
+          width: 52,
+          height: 52,
           decoration: BoxDecoration(
-            color: const Color(0xFF12386D),
-            borderRadius: BorderRadius.circular(15),
+            color: const Color(0xFF24508D),
+            borderRadius: BorderRadius.circular(17),
           ),
           child: const Icon(
-            Icons.location_on,
-            color: Color(0xFF64B5F6),
+            Icons.location_on_rounded,
+            color: Color(0xFF8CCBFF),
+            size: 26,
           ),
         ),
 
         title: Text(
           city,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 17,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
           ),
         ),
 
-        subtitle: const Text(
-          'Tap to view weather',
-          style: TextStyle(
-            color: Colors.white54,
+        subtitle: const Padding(
+          padding: EdgeInsets.only(top: 4),
+          child: Text(
+            'Tap to view weather',
+            style: TextStyle(
+              color: Colors.white54,
+              fontSize: 12,
+            ),
           ),
         ),
 
         trailing: IconButton(
           onPressed: onDelete,
           icon: const Icon(
-            Icons.delete_outline,
+            Icons.delete_outline_rounded,
             color: Colors.white70,
+            size: 24,
           ),
         ),
       ),
